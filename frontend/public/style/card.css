@@ -1,0 +1,72 @@
+.tp-sl-card-content {
+	padding: 2%;
+}
+
+.tp-sl-card-content-child {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	gap: 3rem;
+}
+
+.tp-sl-title-container {
+	font-size: 2.5rem;
+}
+
+.tp-sl-card-row-height {
+	height: 15vh;
+}
+
+.tp-sl-card-header {
+	margin-top: 20px;
+}
+
+.tp-sl-card-title {
+	font-size: 2.5rem;
+}
+
+.tp-sl-card-text {
+	font-size: 1rem;
+}
+
+.tp-sl-info-text {
+	line-height: 1.7;
+	/* 원하는 줄간격 설정 */
+}
+
+.tp-sl-info-text {
+	color: #fff !important;
+	font-size: 1.2rem !important;
+	font-weight: normal;
+	align-items: start;
+}
+
+.tp-sl-card-button-text {
+	font-size: 1rem;
+}
+
+.tp-sl-btn-primary {
+	animation: none
+}
+
+.tp-sl-btn-primary:hover {
+	animation: none;
+}
+
+.tp-sl-card-row:hover .tp-sl-btn-parent:not(:hover)>.btn {
+	animation: none;
+	opacity: 0.5;
+}
+
+
+@keyframes flash {
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes flashText {
+	to {
+		opacity: 0.15;
+	}
+}

@@ -1,0 +1,32 @@
+FROM debian:bullseye-slim
+
+# Install necessary packages (nginx, openssl, dumb-init, Node.js)
+RUN apt-get update && \
+    apt-get install -y nginx openssl dumb-init curl gnupg && \
+    curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
+    apt-get install -y nodejs
+
+WORKDIR /app
+
+# Copy application files
+COPY . .
+
+# Install dependencies and build
+RUN npm install && \
+    npm run build
+
+# Copy nginx configuration and entrypoint script
+COPY ./conf/default.conf /etc/nginx/conf.d/default.conf
+COPY tools/docker-entrypoint.sh /docker-entrypoint.sh
+
+# Set execute permission on entrypoint script
+RUN chmod +x /docker-entrypoint.sh
+
+RUN mv /app/dist/* /var/www/html/
+
+# Expose port 443 (HTTPS)
+EXPOSE 443
+
+# Set entrypoint and default command
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+CMD ["/docker-entrypoint.sh"]
