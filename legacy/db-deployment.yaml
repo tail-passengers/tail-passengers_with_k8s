@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+      - env:
+        - name: BASE_IP
+          valueFrom:
+            configMapKeyRef:
+              key: BASE_IP
+              name: env
+        - name: DJANGO_SECRET_KEY
+          valueFrom:
+            configMapKeyRef:
+              key: DJANGO_SECRET_KEY
+              name: env
+        - name: POSTGRES_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: POSTGRES_NAME
+              name: env
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: POSTGRES_PASSWORD
+              name: env
+        - name: POSTGRES_USER
+          valueFrom:
+            configMapKeyRef:
+              key: POSTGRES_USER
+              name: env
+        image: postgres
+        name: db
+      restartPolicy: Always

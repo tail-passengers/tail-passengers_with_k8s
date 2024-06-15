@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: channels
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: channels
+  template:
+    metadata:
+      labels:
+        app: channels
+    spec:
+      containers:
+      - image: redis
+        name: channels
+        ports:
+        - containerPort: 6379
+          protocol: TCP
+      restartPolicy: Always

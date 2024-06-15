@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - image: kmj951015/tail-passengers_frontend:1.0.1
+        name: frontend
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        - containerPort: 443
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /app/dist
+          name: dist
+      restartPolicy: Always
+      volumes:
+      - name: dist
+        persistentVolumeClaim:
+          claimName: dist
