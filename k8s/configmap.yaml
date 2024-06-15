@@ -1,0 +1,12 @@
+apiVersion: v1
+data:
+  BASE_IP: 127.0.0.1:30443
+  DJANGO_SECRET_KEY: o6sw@lce%#c$!y2(s9i(!!vq-f(0!%ulzu%zf$h3!5nnzq)(^z
+  POSTGRES_NAME: postgres
+  POSTGRES_PASSWORD: postgress
+  POSTGRES_USER: postgres
+kind: ConfigMap
+metadata:
+  labels:
+    app: db-env
+  name: env

@@ -1,0 +1,161 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: channels
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: channels
+  template:
+    metadata:
+      labels:
+        app: channels
+    spec:
+      containers:
+      - image: redis
+        name: channels
+        ports:
+        - containerPort: 6379
+          protocol: TCP
+      restartPolicy: Always
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+      - env:
+        - name: BASE_IP
+          valueFrom:
+            configMapKeyRef:
+              key: BASE_IP
+              name: env
+        - name: DJANGO_SECRET_KEY
+          valueFrom:
+            configMapKeyRef:
+              key: DJANGO_SECRET_KEY
+              name: env
+        - name: POSTGRES_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: POSTGRES_NAME
+              name: env
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: POSTGRES_PASSWORD
+              name: env
+        - name: POSTGRES_USER
+          valueFrom:
+            configMapKeyRef:
+              key: POSTGRES_USER
+              name: env
+        image: postgres
+        name: db
+      restartPolicy: Always
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - image: kmj951015/tail-passengers_frontend:1.0.1
+        name: frontend
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        - containerPort: 443
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /app/dist
+          name: dist
+      restartPolicy: Always
+      volumes:
+      - name: dist
+        persistentVolumeClaim:
+          claimName: dist
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: web
+  name: web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - args:
+        - sh
+        - -c
+        - python manage.py makemigrations && python manage.py migrate && python manage.py loaddata test_user.json && daphne -b 0.0.0.0 -p 443 back.asgi:application
+        env:
+        - name: BASE_IP
+          valueFrom:
+            configMapKeyRef:
+              key: BASE_IP
+              name: env
+        - name: DJANGO_SECRET_KEY
+          valueFrom:
+            configMapKeyRef:
+              key: DJANGO_SECRET_KEY
+              name: env
+        - name: POSTGRES_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: POSTGRES_NAME
+              name: env
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: POSTGRES_PASSWORD
+              name: env
+        - name: POSTGRES_USER
+          valueFrom:
+            configMapKeyRef:
+              key: POSTGRES_USER
+              name: env
+        image: kmj951015/tail-passengers_web:1.0.1
+        name: web
+        ports:
+        - containerPort: 443
+          protocol: TCP
+      restartPolicy: Always
