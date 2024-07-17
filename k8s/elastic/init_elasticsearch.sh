@@ -28,12 +28,14 @@ while [ "$output" == "unknown" ] ; do
     exit 1
   fi
 done
-echo "Elasticsearch is healthy."
+echo "Elasticsearch is ready."
 
 
 # 기본으로 생성된 elastic 계정의 비밀번호 확인
 #PASSWORD=$(kubectl get secret elasticsearch-es-elastic-user -o go-template='{{.data.elastic | base64decode}}')
 
-# 포트포워딩 한 뒤, https://localhost:9200 접속
+# TODO elasticsearch-es-http 서비스를 nodeport로 변경하기
+
+# 포트포워딩 후, https://localhost:9200 접속
 # ID: elastic, PW: 위에 값으로 입력하면 응답이 나온다.
-#kubectl port-forward service/elasticsearch-es-http 9200
+# kubectl port-forward service/elasticsearch-es-http 9200
