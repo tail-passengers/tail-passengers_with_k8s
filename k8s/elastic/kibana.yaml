@@ -1,0 +1,10 @@
+# https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-deploy-kibana.html
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: kibana
+spec:
+  version: 8.14.3
+  count: 1
+  elasticsearchRef:
+    name: elasticsearch
